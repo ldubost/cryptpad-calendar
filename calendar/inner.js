@@ -27,8 +27,8 @@ define([
 {
 
 
-    var verbose = function (x) { console.log(x); };
-    // verbose = function () {}; // comment out to enable verbose logging
+    var verbose = function (x, y) { console.log(x, y); };
+    verbose = function () {}; // comment out to enable verbose logging
 
     // Calendar code
     var initCalendar = function (framework, calendar) {
@@ -51,6 +51,26 @@ define([
 
         framework._.toolbar.$drawer.append(helpMenu.button);
     };
+
+    var fixDate = function(value) {
+       verbose("Fixing date ", value);
+       const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+
+       var newValue = new Date(value);
+       verbose("New date ", newValue);
+       return newValue;
+    }
+
+    var fixDates = function(events) {
+        if (events==null)
+          return null;
+
+        events.forEach(function(element) {
+           element.start = fixDate(element.start);
+           element.end = fixDate(element.end);
+        });
+        return events;
+    }
 
     // Start of the main loop
     var andThen2 = function (framework) {
@@ -79,38 +99,36 @@ define([
 
         framework.onEditableChange(function (unlocked) {
             if (framework.isReadOnly()) { return; }
-        });
+        }); 
 
         framework.onContentUpdate(function (newContent) {
             if (!window.readCB) {
-              window.latestContent = newContent;
+              window.latestContent = fixDates(newContent.content);
               return;
             }
 
-            // Need to update the content
-            verbose("Content should be updated to " + newContent);
-            // var currentContent = window.readCB();
-            var remoteContent = newContent.content;
-            console.log("Here Got " , remoteContent);
-            window.updateCB(remoteContent);
+            var currentContent = window.readCB();
+            var remoteContent = fixDates(newContent.content);
 
-            /*
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
                 verbose("Content is different.. Applying content");
                 window.updateCB(remoteContent);
             }
-            */
         });
 
         framework.setContentGetter(function () {
-            console.log("In contentGetter");
             if (!window.readCB) {
-                return {
+                if (window.latestContent)
+                 return {
+                    content: window.latestContent 
+                 };
+                else
+                 return {
                     content: []
-                };
+                 };
             }
             var content = window.readCB(); 
-            console.log("Content current value is ", content);
+            verbose("Content current value is ", content);
             return {
                 content: content
             };
