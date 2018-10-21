@@ -1,0 +1,174 @@
+@import (reference) "../../customize/src/less2/include/browser.less";
+@import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/tools.less";
+
+// body
+&.cp-app-calendar {
+    .framework_main(
+        @bg-color: @colortheme_kanban-bg,
+        @warn-color: @colortheme_kanban-warn,
+        @color: @colortheme_kanban-color
+    );
+
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    min-height: auto;
+
+    #cp-app-calendar-container {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+    }
+    #cp-app-calendar-editor {
+        flex: 1;
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        overflow: hidden;
+    }
+    #cp-app-calendar-content {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-flow: column;
+        .calendar-container-outer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-height: -webkit-min-content;
+            min-height: min-content;
+            .calendar-container {
+                flex: 1;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+            }
+        }
+
+        .calendar-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5px 10px 10px;
+        }
+
+        .calendar-board {
+            header {
+                display: flex;
+                align-items: center;
+                padding: 13px 10px;
+                .calendar-title-board {
+                    flex: 1;
+                    margin-right: 10px;
+                    min-width: 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+                #calendar-edit {
+                    font-weight: bold;
+                }
+            }
+        }
+
+        #calendar-edit {
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(0,0,0,0.3);
+            color: inherit;
+        }
+
+        @button-size: 50px;
+        #calendar-addboard {
+            margin: 30px;
+            border: 1px solid;
+            width: @button-size;
+            height: @button-size;
+            line-height: @button-size;
+            text-align: center;
+            background: @colortheme_kanban-bg;
+            align-self: flex-start;
+            font-size: 30px;
+            cursor: pointer;
+            .tools_unselectable();
+        }
+
+        .calendar-remove-item {
+            padding: 0 0.5em;
+            visibility: hidden;
+        }
+        .calendar-item:hover {
+            .calendar-remove-item {
+                visibility: visible;
+            }
+        }
+
+        .calendar-additem {
+            float: right;
+            background: #EEE;
+            padding: 5px .5rem 4px;
+            line-height: 1;
+            margin-bottom: 5px;
+            margin-right: 5px;
+            &:hover {
+                background: transparent;
+            }
+        }
+
+        .calendar-header-yellow {
+            background: #FC3 !important;
+        }
+
+        .calendar-header-orange {
+            background: #F91 !important;
+        }
+
+        .calendar-header-blue {
+            background: #0AC !important;
+        }
+
+        .calendar-header-red {
+            background: #E43 !important;
+        }
+
+        .calendar-header-green {
+            background: #8C4 !important;
+        }
+
+        .calendar-header-purple {
+            background: #c851ff !important;
+        }
+
+        .calendar-header-cyan {
+            background: #00ffff !important;
+        }
+
+        .calendar-header-lightgreen {
+            background: #c3ff5b !important;
+        }
+
+        .calendar-header-lightblue {
+            background: #adeeff !important;
+        }
+
+        @media (max-width: @browser_media-medium-screen) {
+            #cp-app-calendar-container {
+                flex: 1;
+                max-width: 100%;
+                resize: none;
+            }
+        }
+
+        &.cp-app-readonly {
+            .calendar-item, .calendar-title-board {
+                cursor: default !important;
+                .tools_unselectable();
+            }
+            .calendar-title-button, #calendar-addboard, .calendar-remove-item, .calendar-additem {
+                display: none !important;
+            }
+        }
+    }
+
+}
