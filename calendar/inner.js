@@ -1,3 +1,4 @@
+// main.js
 define([
     'jquery',
     'json.sortify',
@@ -9,9 +10,6 @@ define([
     '/common/common-interface.js',
     '/common/modes.js',
     '/customize/messages.js',
-    '/bower_components/react/react.js',
-    '/bower_components/react/react-dom.js',
-/*    '/calendar/calendar.js', */
     'css!/calendar/calendar.css',
     'less!/calendar/app-calendar.less'
 ], function (
@@ -24,9 +22,7 @@ define([
     Hash,
     UI,
     Modes,
-    Messages,
-    React,
-    ReactDOM
+    Messages
     )
 {
 
@@ -130,12 +126,13 @@ define([
         nThen(function (waitFor) {
 
             // Framework initialization
-            Framework.create({
+            var framework = Framework.create({
                 toolbarContainer: '#cme_toolbox',
                 contentContainer: '#cp-app-calendar-editor',
             }, waitFor(function (framework) {
                 andThen2(framework);
             }));
+            window.frames[0].window.cryptpad = framework;
         });
     };
     main();
