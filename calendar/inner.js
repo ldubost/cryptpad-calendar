@@ -26,8 +26,9 @@ define([
     )
 {
 
+
     var verbose = function (x) { console.log(x); };
-    verbose = function () {}; // comment out to enable verbose logging
+    // verbose = function () {}; // comment out to enable verbose logging
 
     // Calendar code
     var initCalendar = function (framework, calendar) {
@@ -81,31 +82,35 @@ define([
         });
 
         framework.onContentUpdate(function (newContent) {
-            // Init if needed
-            if (!calendar) {
-                calendar = initCalendar(framework, (newContent || {}).content);
-                return;
+            if (!window.readCB) {
+              window.latestContent = newContent;
+              return;
             }
 
             // Need to update the content
             verbose("Content should be updated to " + newContent);
-            var currentContent = "" // getBoardsJSON();
+            // var currentContent = window.readCB();
             var remoteContent = newContent.content;
+            console.log("Here Got " , remoteContent);
+            window.updateCB(remoteContent);
 
+            /*
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
-                // reinit calendar (TODO: optimize to diff only)
                 verbose("Content is different.. Applying content");
+                window.updateCB(remoteContent);
             }
+            */
         });
 
         framework.setContentGetter(function () {
-            if (!calendar) {
+            console.log("In contentGetter");
+            if (!window.readCB) {
                 return {
                     content: []
                 };
             }
-            var content = ""; 
-            verbose("Content current value is " + content);
+            var content = window.readCB(); 
+            console.log("Content current value is ", content);
             return {
                 content: content
             };
@@ -122,7 +127,7 @@ define([
     };
 
     var main = function () {
-        // var framework;
+        var framework;
         nThen(function (waitFor) {
 
             // Framework initialization
@@ -130,10 +135,16 @@ define([
                 toolbarContainer: '#cme_toolbox',
                 contentContainer: '#cp-app-calendar-editor',
             }, waitFor(function (framework) {
+                window.cryptpad = framework;
+                window.setFrameCB = function(readcb, updatecb) {
+                   window.updateCB = updatecb;
+                   window.readCB = readcb;
+                }
                 andThen2(framework);
             }));
-            window.frames[0].window.cryptpad = framework;
         });
     };
     main();
 });
+
+
